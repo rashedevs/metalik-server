@@ -20,7 +20,13 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    console.log("Database connected");
+    const toolCollection = client.db("metalik").collection("tools");
+    app.get("/tool", async (req, res) => {
+      const query = {};
+      const cursor = toolCollection.find(query);
+      const tools = await cursor.toArray();
+      res.send(tools);
+    });
   } finally {
     // await client.close();
   }
