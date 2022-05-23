@@ -22,6 +22,7 @@ async function run() {
     await client.connect();
     const toolCollection = client.db("metalik").collection("tools");
     const reviewCollection = client.db("metalik").collection("reviews");
+    const orderCollection = client.db("metalik").collection("orders");
     app.get("/tool", async (req, res) => {
       const query = {};
       const cursor = toolCollection.find(query);
@@ -46,6 +47,12 @@ async function run() {
     app.post("/review", async (req, res) => {
       const newReview = req.body;
       const result = await reviewCollection.insertOne(newReview);
+      res.send(result);
+    });
+    // post order from ui to db
+    app.post("/order", async (req, res) => {
+      const newOrder = req.body;
+      const result = await orderCollection.insertOne(newOrder);
       res.send(result);
     });
   } finally {
