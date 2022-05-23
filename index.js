@@ -36,6 +36,29 @@ async function run() {
       const tool = await toolCollection.findOne(query);
       res.send(tool);
     });
+    // single tool update api
+    app.put("/tool/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedTool = req.body;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          name: updatedTool.name,
+          img: updatedTool.img,
+          description: updatedTool.description,
+          min_order: updatedTool.min_order,
+          available_quantity: updatedTool.available_quantity,
+          price: updatedTool.price,
+        },
+      };
+      const result = await toolCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
+    });
     // load reviews from db
     app.get("/review", async (req, res) => {
       const query = {};
