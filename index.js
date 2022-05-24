@@ -23,11 +23,25 @@ async function run() {
     const toolCollection = client.db("metalik").collection("tools");
     const reviewCollection = client.db("metalik").collection("reviews");
     const orderCollection = client.db("metalik").collection("orders");
+    const userCollection = client.db("metalik").collection("users");
+
     app.get("/tool", async (req, res) => {
       const query = {};
       const cursor = toolCollection.find(query);
       const tools = (await cursor.toArray()).reverse();
       res.send(tools);
+    });
+    // put users
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
     });
     // find one by id
     app.get("/tool/:id", async (req, res) => {
