@@ -48,7 +48,7 @@ async function run() {
       res.send(tools);
     });
     // get all users
-    app.get("/user", async (req, res) => {
+    app.get("/user", verifyJWT, async (req, res) => {
       const query = {};
       const cursor = userCollection.find(query);
       const users = await cursor.toArray();
@@ -67,9 +67,19 @@ async function run() {
       const token = jwt.sign(
         { email: email },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "12h" }
       );
       res.send({ result, token });
+    });
+    // put admin role
+    app.put("/user/admin/:email", verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updateDoc = {
+        $set: { role: "admin" },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result);
     });
     // find one by id
     app.get("/tool/:id", async (req, res) => {
