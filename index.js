@@ -176,6 +176,13 @@ async function run() {
       const result = await orderCollection.deleteOne(query);
       res.send(result);
     });
+    // find a specific order by id
+    app.get("/orders/:id", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.findOne(query);
+      res.send(result);
+    });
     // delete a specific product finding by id
     app.delete("/tool/:id", verifyJWT, verifyAdmin, async (req, res) => {
       const id = req.params.id;
