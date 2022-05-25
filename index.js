@@ -40,12 +40,18 @@ async function run() {
     const reviewCollection = client.db("metalik").collection("reviews");
     const orderCollection = client.db("metalik").collection("orders");
     const userCollection = client.db("metalik").collection("users");
-    //load all tools
+    // load all tools
     app.get("/tool", async (req, res) => {
       const query = {};
       const cursor = toolCollection.find(query);
       const tools = (await cursor.toArray()).reverse();
       res.send(tools);
+    });
+    // post a new tool
+    app.post("/tool", async (req, res) => {
+      const newTool = req.body;
+      const result = await toolCollection.insertOne(newTool);
+      res.send(result);
     });
     // get all users
     app.get("/user", verifyJWT, async (req, res) => {
