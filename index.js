@@ -41,6 +41,7 @@ async function run() {
     const reviewCollection = client.db("metalik").collection("reviews");
     const orderCollection = client.db("metalik").collection("orders");
     const userCollection = client.db("metalik").collection("users");
+    const profileCollection = client.db("metalik").collection("profiles");
 
     // verify admin middleware function
     const verifyAdmin = async (req, res, next) => {
@@ -65,6 +66,22 @@ async function run() {
         payment_method_types: ["card"],
       });
       res.send({ clientSecret: paymentIntent.client_secret });
+    });
+    // update profile
+    app.put("/profile", verifyJWT, async (req, res) => {
+      const email = req.query.email;
+      const profile = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: profile,
+      };
+      const result = await profileCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      res.send(result);
     });
     // load all tools
     app.get("/tool", async (req, res) => {
