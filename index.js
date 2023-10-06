@@ -36,7 +36,8 @@ function verifyJWT(req, res, next) {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
+    client.connect();
     const toolCollection = client.db("metalik").collection("tools");
     const reviewCollection = client.db("metalik").collection("reviews");
     const orderCollection = client.db("metalik").collection("orders");
